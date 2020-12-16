@@ -87,19 +87,21 @@ if (SXG_BUILD_STATIC)
   target_link_libraries (sxg_static PRIVATE ${OPENSSL_LIBRARIES})
 endif ()
 
-add_executable (gensxg src/gensxg.c)
+if (SXG_BUILD_EXECUTABLES)
+  add_executable (gensxg src/gensxg.c)
 
-target_include_directories (gensxg PRIVATE ${PROJECT_SOURCE_DIR}/include
-                                           ${OPENSSL_INCLUDE_DIR})
+  target_include_directories (gensxg PRIVATE ${PROJECT_SOURCE_DIR}/include
+                                             ${OPENSSL_INCLUDE_DIR})
 
-target_link_libraries (gensxg PRIVATE ${OPENSSL_LIBRARIES} sxg)
+  target_link_libraries (gensxg PRIVATE ${OPENSSL_LIBRARIES} sxg)
 
-add_executable (gencertchain src/gencertchain.c)
+  add_executable (gencertchain src/gencertchain.c)
 
-target_include_directories (gencertchain PRIVATE ${PROJECT_SOURCE_DIR}/include
+  target_include_directories (gencertchain PRIVATE ${PROJECT_SOURCE_DIR}/include
                                                  ${OPENSSL_INCLUDE_DIR})
 
-target_link_libraries (gencertchain PRIVATE ${OPENSSL_LIBRARIES} sxg)
+  target_link_libraries (gencertchain PRIVATE ${OPENSSL_LIBRARIES} sxg)
+endif ()
 
 # ##############################################################################
 # Installing
@@ -131,8 +133,11 @@ install (
   DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   FILES_MATCHING
   PATTERN "*.h*")
-install (TARGETS gensxg RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install (TARGETS gencertchain RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if (SXG_BUILD_EXECUTABLES)
+  install (TARGETS gensxg RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  install (TARGETS gencertchain RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif ()
 
 # ##############################################################################
 # Generate man files
