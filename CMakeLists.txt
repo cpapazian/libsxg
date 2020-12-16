@@ -72,6 +72,25 @@ target_include_directories (sxg PRIVATE ${PROJECT_SOURCE_DIR}/include
 
 target_link_libraries (sxg PRIVATE ${OPENSSL_LIBRARIES})
 
+add_library (
+  sxg_static STATIC
+  src/sxg_buffer.c
+  src/sxg_buffer_debug.c
+  src/sxg_cbor.c
+  src/sxg_cert_chain.c
+  src/sxg_codec.c
+  src/sxg_encoded_response.c
+  src/sxg_generate.c
+  src/sxg_header.c
+  src/sxg_raw_response.c
+  src/sxg_sig.c
+  src/sxg_signer_list.c)
+
+target_include_directories (sxg_static PRIVATE ${PROJECT_SOURCE_DIR}/include
+                                               ${OPENSSL_INCLUDE_DIR})
+
+target_link_libraries (sxg_static PRIVATE ${OPENSSL_LIBRARIES})
+
 add_executable (gensxg src/gensxg.c)
 
 target_include_directories (gensxg PRIVATE ${PROJECT_SOURCE_DIR}/include
