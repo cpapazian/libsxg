@@ -25,6 +25,7 @@ set (LIBSXG_SOVERSION "${CMAKE_PROJECT_VERSION_MAJOR}")
 
 option (SXG_BUILD_SHARED "Build shared library" TRUE)
 option (SXG_BUILD_STATIC "Build static libirary" FALSE)
+option (SXG_WITH_CERT_CHAIN TRUE)
 
 option (
   RUN_TEST
@@ -59,7 +60,6 @@ set (SXG_SOURCES
   src/sxg_buffer.c
   src/sxg_buffer_debug.c
   src/sxg_cbor.c
-  src/sxg_cert_chain.c
   src/sxg_codec.c
   src/sxg_encoded_response.c
   src/sxg_generate.c
@@ -67,6 +67,10 @@ set (SXG_SOURCES
   src/sxg_raw_response.c
   src/sxg_sig.c
   src/sxg_signer_list.c)
+  
+if (SXG_WITH_CERT_CHAIN)
+  list (APPEND SXG_SOURCES src/sxg_cert_chain.c)
+endif ()
 
 if (SXG_BUILD_SHARED)
   add_library (sxg ${SXG_SOURCES})
