@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <openssl/sha.h>
 #include <openssl/x509.h>
+
 #include <string.h>
 
 static bool sxg_calc_sha256_bytes(const sxg_buffer_t* src,
@@ -40,23 +41,31 @@ bool sxg_calc_sha384(const sxg_buffer_t* src, sxg_buffer_t* dst) {
 
 bool sxg_base64encode_bytes(const uint8_t* src, size_t length,
                             sxg_buffer_t* dst) {
-  BUF_MEM* bptr;
-  BIO* base64 = BIO_new(BIO_f_base64());
-  if (base64 == NULL) {
-    return false;
-  }
-  BIO* bmem = BIO_new(BIO_s_mem());
-  if (bmem == NULL) {
-    BIO_free(base64);
-    return false;
-  }
-  base64 = BIO_push(base64, bmem);
-  BIO_set_flags(base64, BIO_FLAGS_BASE64_NO_NL);  // We don't need following \n.
+  // BUF_MEM* bptr;
+  // BIO* base64 = BIO_new(BIO_f_base64());
+  // if (base64 == NULL) {
+  //   return false;
+  // }
+  // BIO* bmem = BIO_new(BIO_s_mem());
+  // if (bmem == NULL) {
+  //   BIO_free(base64);
+  //   return false;
+  // }
+  // base64 = BIO_push(base64, bmem);
+  // BIO_set_flags(base64, BIO_FLAGS_BASE64_NO_NL);  // We don't need following \n.
 
-  bool success = BIO_write(base64, src, length) > 0 && BIO_flush(base64) > 0 &&
-                 BIO_get_mem_ptr(base64, &bptr) > 0 &&
-                 sxg_write_bytes((const uint8_t*)bptr->data, bptr->length, dst);
-  BIO_free_all(base64);
+  // bool success = BIO_write(base64, src, length) > 0 && BIO_flush(base64) > 0 &&
+  //                BIO_get_mem_ptr(base64, &bptr) > 0 &&
+  //                sxg_write_bytes((const uint8_t*)bptr->data, bptr->length, dst);
+  // BIO_free_all(base64);
+  // return success;
+
+  size_t ol;
+  bool success = EVP_EncodedLength(&ol, length) &&
+                 sxg_buffer_resize(ol-1, dst) &&
+                 EVP_EncodeBlock(dst->data, src, length) == ol-1;
+
+  // size_t bytes_written = EVP_EncodeBlock()
   return success;
 }
 
