@@ -61,6 +61,8 @@ if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE "Debug")
 endif ()
 
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+
 # When RUN_TEST is enabled, `target_link_options` used in fuzzing test requires 3.13.
 # When RUN_TEST is disabled, I'm not sure what minimum version is required, but
 # it worked when tested at 3.1.
